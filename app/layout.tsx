@@ -1,20 +1,26 @@
-// app/layout.tsx
-import './globals.css'; 
-import Navbar from './components/Navbar';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-interface RootLayoutProps {
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Career Guidance',
+  description: 'Find your perfect career path with MBTI personality test',
+};
+
+export default function RootLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-const RootLayout = ({ children }: RootLayoutProps) => {
+}) {
   return (
     <html lang="en">
-      <body>
-        <Navbar />
-        <main>{children}</main>
+      <body className={inter.className}>
+        <main className="min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}
