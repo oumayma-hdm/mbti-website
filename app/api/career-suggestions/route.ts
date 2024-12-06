@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
+import { mbtiCareers } from '../../services/mbtiCareers';
 
 export async function POST(request: Request) {
-  if (!process.env.HUGGINGFACE_API_KEY) {
-    return NextResponse.json(
-      { error: 'API key not configured' },
-      { status: 500 }
-    );
-  }
-
   try {
     const { mbtiType } = await request.json();
 
@@ -18,32 +12,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await fetch(
-      "https://api-inference.huggingface.co/models/google/flan-t5-xl",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          inputs: `Generate 5 career recommendations for MBTI type ${mbtiType}. Output only job titles separated by commas.`
-        }),
-      }
-    );
+    const careers = mbtiCareers[mbtiType as keyof typeof mbtiCareers];
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch from HuggingFace API');
+    if (!careers) {
+      return NextResponse.json(
+        { error: 'No careers found for this MBTI type' },
+        { status: 404 }
+      );
     }
-
-    const data = await response.json();
-    console.log('API Response:', data);
-
-    const careers = data[0].generated_text
-      .split(',')
-      .map((career: string) => career.trim())
-      .filter((career: string) => career.length > 0)
-      .slice(0, 5);
 
     return NextResponse.json({ careers });
 

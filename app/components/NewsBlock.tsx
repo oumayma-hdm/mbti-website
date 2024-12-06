@@ -2,6 +2,7 @@
 "use client"; 
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 const NewsBlock = () => {
   // Todo: make it select latest created pages 
@@ -27,9 +28,9 @@ const NewsBlock = () => {
 
               <p className="mb-4">{news.content}</p>
 
-              <button className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition duration-300">
+              <Link href={`/page/${news.id}`} className="mt-4 px-4 py-2 bg-white text-black rounded-full hover:bg-gray-200 transition duration-300">
                 Learn More
-              </button>
+              </Link>
             </div>
           ))}
         </div>
